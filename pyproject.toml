@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "csv-profiler"
+version = "0.1.0"
+description = "A tiny data-quality profiler for CSV files — stdlib-only Python CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "taha-b0t" }]
+
+[project.scripts]
+csvprofiler = "csvprofiler.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
