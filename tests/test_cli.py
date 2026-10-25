@@ -37,3 +37,16 @@ def test_main_prints_shape(tmp_path, capsys):
 def test_main_missing_file(capsys):
     assert main(["does-not-exist.csv"]) == 1
     assert "no such file" in capsys.readouterr().err
+
+
+def test_main_prints_inferred_types(tmp_path, capsys):
+    path = write_csv(
+        tmp_path, "name,age,joined,active\nada,36,2026-01-15,true\n"
+    )
+    assert main([str(path)]) == 0
+    out = capsys.readouterr().out
+    assert "types:" in out
+    assert "  name: string" in out
+    assert "  age: integer" in out
+    assert "  joined: date" in out
+    assert "  active: boolean" in out

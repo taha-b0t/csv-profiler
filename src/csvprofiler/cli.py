@@ -8,11 +8,12 @@ incrementally per the roadmap in the README.
 from __future__ import annotations
 
 import argparse
-import csv
 import sys
 from pathlib import Path
 
 from . import __version__
+from .loader import read_csv
+from .types import infer_types
 
 
 def count_rows_and_columns(path: Path) -> tuple[int, int]:
@@ -20,13 +21,8 @@ def count_rows_and_columns(path: Path) -> tuple[int, int]:
 
     The header row is not counted as a data row.
     """
-    with path.open(newline="", encoding="utf-8") as fh:
-        reader = csv.reader(fh)
-        header = next(reader, None)
-        if header is None:
-            return 0, 0
-        rows = sum(1 for _ in reader)
-        return rows, len(header)
+    table = read_csv(path)
+    return table.row_count, table.column_count
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -45,10 +41,15 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: no such file: {path}", file=sys.stderr)
         return 1
 
-    rows, cols = count_rows_and_columns(path)
+    table = read_csv(path)
+    types = infer_types(table)
     print(f"file:    {path}")
-    print(f"rows:    {rows}")
-    print(f"columns: {cols}")
+    print(f"rows:    {table.row_count}")
+    print(f"columns: {table.column_count}")
+    if table.columns:
+        print("types:")
+        for name in table.columns:
+            print(f"  {name}: {types[name]}")
     return 0
 
 
