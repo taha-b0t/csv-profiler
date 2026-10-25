@@ -22,13 +22,14 @@ Requires Python 3.10+.
 csvprofiler data.csv
 ```
 
-Current (v0.1) behavior: reads the file and reports the row and column counts.
+Current behavior: reads the file, reports the row and column counts,
+and infers each column's type (integer, float, date, boolean, string).
 Profiling features land incrementally — see the roadmap below.
 
 ## Roadmap
 
 - [x] CLI skeleton: read a CSV, report row/column counts
-- [ ] Column type inference (integer, float, date, boolean, string)
+- [x] Column type inference (integer, float, date, boolean, string)
 - [ ] Per-column statistics (nulls, uniques, min/max/mean, top values)
 - [ ] Duplicate row detection
 - [ ] Data-quality warnings (high null %, constant columns, mixed types)
