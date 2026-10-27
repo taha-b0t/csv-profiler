@@ -25,7 +25,9 @@ csvprofiler data.csv
 Current behavior: reads the file, reports the row and column counts,
 infers each column's type (integer, float, date, boolean, string),
 and prints per-column statistics (nulls, uniques, min/max/mean/median
-for numbers, top values for strings).
+for numbers, top values for strings), then flags data-quality
+warnings: duplicate rows, columns with over 30% missing values,
+constant columns, and columns mixing value types.
 Profiling features land incrementally — see the roadmap below.
 
 ## Roadmap
@@ -33,8 +35,8 @@ Profiling features land incrementally — see the roadmap below.
 - [x] CLI skeleton: read a CSV, report row/column counts
 - [x] Column type inference (integer, float, date, boolean, string)
 - [x] Per-column statistics (nulls, uniques, min/max/mean, top values)
-- [ ] Duplicate row detection
-- [ ] Data-quality warnings (high null %, constant columns, mixed types)
+- [x] Duplicate row detection
+- [x] Data-quality warnings (high null %, constant columns, mixed types)
 - [ ] Markdown report output (`--report report.md`)
 - [ ] JSON output (`--json`)
 - [ ] GitHub Actions CI

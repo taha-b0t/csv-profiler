@@ -52,6 +52,27 @@ def test_main_prints_inferred_types(tmp_path, capsys):
     assert "  active: boolean" in out
 
 
+def test_main_prints_no_warnings_for_clean_file(tmp_path, capsys):
+    path = write_csv(tmp_path, "age,city\n30,Paris\n25,Lyon\n")
+    assert main([str(path)]) == 0
+    out = capsys.readouterr().out
+    assert "warnings:" in out
+    assert "  none" in out
+
+
+def test_main_prints_warnings_for_dirty_file(tmp_path, capsys):
+    path = write_csv(
+        tmp_path,
+        "age,flag,mix\n30,yes,1\n30,yes,1\n30,yes,abc\n,yes,3\n",
+    )
+    assert main([str(path)]) == 0
+    out = capsys.readouterr().out
+    assert "warnings:" in out
+    assert "duplicate row(s)" in out
+    assert "constant" in out
+    assert "mixes value types" in out
+
+
 def test_main_prints_per_column_stats(tmp_path, capsys):
     path = write_csv(
         tmp_path, "age,city\n30,Paris\n25,Paris\n,Paris\n"

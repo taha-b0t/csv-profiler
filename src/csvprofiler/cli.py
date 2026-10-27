@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
+from .checks import profile_warnings
 from .loader import read_csv
 from .stats import profile_stats
 from .types import infer_types
@@ -54,6 +55,16 @@ def _print_stats(table, types) -> None:
             print(f"    top values: {top}")
 
 
+def _print_warnings(table) -> None:
+    warnings = profile_warnings(table)
+    print("warnings:")
+    if not warnings:
+        print("  none")
+        return
+    for warning in warnings:
+        print(f"  - {warning.message}")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="csvprofiler",
@@ -80,6 +91,7 @@ def main(argv: list[str] | None = None) -> int:
         for name in table.columns:
             print(f"  {name}: {types[name]}")
         _print_stats(table, types)
+        _print_warnings(table)
     return 0
 
 
