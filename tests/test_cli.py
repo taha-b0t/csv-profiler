@@ -50,3 +50,15 @@ def test_main_prints_inferred_types(tmp_path, capsys):
     assert "  age: integer" in out
     assert "  joined: date" in out
     assert "  active: boolean" in out
+
+
+def test_main_prints_per_column_stats(tmp_path, capsys):
+    path = write_csv(
+        tmp_path, "age,city\n30,Paris\n25,Paris\n,Paris\n"
+    )
+    assert main([str(path)]) == 0
+    out = capsys.readouterr().out
+    assert "stats:" in out
+    assert "count: 2, nulls: 1 (33.3%), unique: 2" in out
+    assert "min: 25, max: 30, mean: 27.5, median: 27.5" in out
+    assert "top values: Paris (3)" in out
