@@ -22,6 +22,12 @@ Requires Python 3.10+.
 csvprofiler data.csv
 ```
 
+Save the same profile as a Markdown report:
+
+```bash
+csvprofiler data.csv --report report.md
+```
+
 Current behavior: reads the file, reports the row and column counts,
 infers each column's type (integer, float, date, boolean, string),
 and prints per-column statistics (nulls, uniques, min/max/mean/median
@@ -37,7 +43,7 @@ Profiling features land incrementally — see the roadmap below.
 - [x] Per-column statistics (nulls, uniques, min/max/mean, top values)
 - [x] Duplicate row detection
 - [x] Data-quality warnings (high null %, constant columns, mixed types)
-- [ ] Markdown report output (`--report report.md`)
+- [x] Markdown report output (`--report report.md`)
 - [ ] JSON output (`--json`)
 - [ ] GitHub Actions CI
 - [ ] v1.0.0 release

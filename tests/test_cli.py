@@ -73,6 +73,20 @@ def test_main_prints_warnings_for_dirty_file(tmp_path, capsys):
     assert "mixes value types" in out
 
 
+def test_main_report_flag_writes_markdown_file(tmp_path, capsys):
+    path = write_csv(tmp_path, "age,city\n30,Paris\n25,Lyon\n")
+    report_path = tmp_path / "report.md"
+    assert main([str(path), "--report", str(report_path)]) == 0
+    out = capsys.readouterr().out
+    assert f"report:  {report_path}" in out
+    report = report_path.read_text(encoding="utf-8")
+    assert "# CSV profile" in report
+    assert "## Overview" in report
+    assert "## Columns" in report
+    assert "## Warnings" in report
+    assert "| age | integer |" in report
+
+
 def test_main_prints_per_column_stats(tmp_path, capsys):
     path = write_csv(
         tmp_path, "age,city\n30,Paris\n25,Paris\n,Paris\n"

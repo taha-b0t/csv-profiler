@@ -14,6 +14,7 @@ from pathlib import Path
 from . import __version__
 from .checks import profile_warnings
 from .loader import read_csv
+from .report import generate_report
 from .stats import profile_stats
 from .types import infer_types
 
@@ -72,6 +73,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("file", help="path to the CSV file to profile")
     parser.add_argument(
+        "--report",
+        metavar="PATH",
+        help="also write the profile as a Markdown report to PATH",
+    )
+    parser.add_argument(
         "--version", action="version", version=f"csvprofiler {__version__}"
     )
     args = parser.parse_args(argv)
@@ -92,6 +98,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {name}: {types[name]}")
         _print_stats(table, types)
         _print_warnings(table)
+    if args.report:
+        report_path = Path(args.report)
+        report_path.write_text(generate_report(table), encoding="utf-8")
+        print(f"report:  {report_path}")
     return 0
 
 
