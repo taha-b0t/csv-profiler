@@ -23,14 +23,16 @@ csvprofiler data.csv
 ```
 
 Current behavior: reads the file, reports the row and column counts,
-and infers each column's type (integer, float, date, boolean, string).
+infers each column's type (integer, float, date, boolean, string),
+and prints per-column statistics (nulls, uniques, min/max/mean/median
+for numbers, top values for strings).
 Profiling features land incrementally — see the roadmap below.
 
 ## Roadmap
 
 - [x] CLI skeleton: read a CSV, report row/column counts
 - [x] Column type inference (integer, float, date, boolean, string)
-- [ ] Per-column statistics (nulls, uniques, min/max/mean, top values)
+- [x] Per-column statistics (nulls, uniques, min/max/mean, top values)
 - [ ] Duplicate row detection
 - [ ] Data-quality warnings (high null %, constant columns, mixed types)
 - [ ] Markdown report output (`--report report.md`)
