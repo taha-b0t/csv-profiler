@@ -60,6 +60,25 @@ def test_main_duplicate_header_errors(tmp_path, capsys):
     assert "duplicate column name: 'a'" in capsys.readouterr().err
 
 
+def test_main_header_only_prints_note_not_empty_sections(tmp_path, capsys):
+    path = write_csv(tmp_path, "a,b,c\n")
+    assert main([str(path)]) == 0
+    out = capsys.readouterr().out
+    assert "no data rows" in out
+    assert "stats:" not in out
+    assert "types:" not in out
+
+
+def test_main_header_only_json_still_valid(tmp_path, capsys):
+    import json
+
+    path = write_csv(tmp_path, "a,b,c\n")
+    assert main([str(path), "--json"]) == 0
+    profile = json.loads(capsys.readouterr().out)
+    assert profile["row_count"] == 0
+    assert profile["column_count"] == 3
+
+
 def test_main_prints_inferred_types(tmp_path, capsys):
     path = write_csv(
         tmp_path, "name,age,joined,active\nada,36,2026-01-15,true\n"

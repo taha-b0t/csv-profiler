@@ -120,7 +120,11 @@ def main(argv: list[str] | None = None) -> int:
     print(f"file:    {path}")
     print(f"rows:    {table.row_count}")
     print(f"columns: {table.column_count}")
-    if table.columns:
+    if table.row_count == 0:
+        # A header-only file has no values to infer types or stats
+        # from; say so plainly instead of printing empty sections.
+        print("note:    file has a header but no data rows")
+    elif table.columns:
         print("types:")
         for name in table.columns:
             print(f"  {name}: {types[name]}")
