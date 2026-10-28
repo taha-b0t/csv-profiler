@@ -8,11 +8,13 @@ incrementally per the roadmap in the README.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
 from . import __version__
 from .checks import profile_warnings
+from .json_output import profile_to_dict
 from .loader import read_csv
 from .report import generate_report
 from .stats import profile_stats
@@ -78,6 +80,11 @@ def main(argv: list[str] | None = None) -> int:
         help="also write the profile as a Markdown report to PATH",
     )
     parser.add_argument(
+        "--json",
+        action="store_true",
+        help="print the profile as JSON instead of the human-readable summary",
+    )
+    parser.add_argument(
         "--version", action="version", version=f"csvprofiler {__version__}"
     )
     args = parser.parse_args(argv)
@@ -88,6 +95,14 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     table = read_csv(path)
+    if args.report:
+        report_path = Path(args.report)
+        report_path.write_text(generate_report(table), encoding="utf-8")
+    if args.json:
+        # Stdout stays pure JSON so it can be piped to other tools;
+        # a --report file is still written, just not announced here.
+        print(json.dumps(profile_to_dict(table), indent=2))
+        return 0
     types = infer_types(table)
     print(f"file:    {path}")
     print(f"rows:    {table.row_count}")
@@ -99,8 +114,6 @@ def main(argv: list[str] | None = None) -> int:
         _print_stats(table, types)
         _print_warnings(table)
     if args.report:
-        report_path = Path(args.report)
-        report_path.write_text(generate_report(table), encoding="utf-8")
         print(f"report:  {report_path}")
     return 0
 

@@ -87,6 +87,31 @@ def test_main_report_flag_writes_markdown_file(tmp_path, capsys):
     assert "| age | integer |" in report
 
 
+def test_main_json_flag_prints_parseable_profile(tmp_path, capsys):
+    import json
+
+    path = write_csv(tmp_path, "age,city\n30,Paris\n25,Lyon\n")
+    assert main([str(path), "--json"]) == 0
+    profile = json.loads(capsys.readouterr().out)
+    assert profile["row_count"] == 2
+    assert profile["column_count"] == 2
+    by_name = {column["name"]: column for column in profile["columns"]}
+    assert by_name["age"]["type"] == "integer"
+    assert by_name["age"]["mean"] == 27.5
+    assert by_name["city"]["top_values"] == [["Paris", 1], ["Lyon", 1]]
+
+
+def test_main_json_flag_with_report_keeps_stdout_pure_json(tmp_path, capsys):
+    import json
+
+    path = write_csv(tmp_path, "age\n30\n25\n")
+    report_path = tmp_path / "report.md"
+    assert main([str(path), "--json", "--report", str(report_path)]) == 0
+    profile = json.loads(capsys.readouterr().out)
+    assert profile["row_count"] == 2
+    assert "# CSV profile" in report_path.read_text(encoding="utf-8")
+
+
 def test_main_prints_per_column_stats(tmp_path, capsys):
     path = write_csv(
         tmp_path, "age,city\n30,Paris\n25,Paris\n,Paris\n"
