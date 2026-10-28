@@ -92,7 +92,7 @@ One missing age, one duplicated row — spotted at a glance.
 - [x] Markdown report output (`--report report.md`)
 - [x] JSON output (`--json`)
 - [x] GitHub Actions CI
-- [ ] v1.0.0 release
+- [x] v1.0.0 release
 
 ## Development
 
