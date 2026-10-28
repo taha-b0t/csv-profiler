@@ -44,7 +44,7 @@ Profiling features land incrementally — see the roadmap below.
 - [x] Duplicate row detection
 - [x] Data-quality warnings (high null %, constant columns, mixed types)
 - [x] Markdown report output (`--report report.md`)
-- [ ] JSON output (`--json`)
+- [x] JSON output (`--json`)
 - [ ] GitHub Actions CI
 - [ ] v1.0.0 release
 
