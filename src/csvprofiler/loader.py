@@ -38,13 +38,22 @@ def read_csv(path: Path) -> Table:
 
     An empty file yields an empty table; a header-only file yields
     columns with no values. A UTF-8 byte-order mark is stripped so
-    the first column name is not polluted by it.
+    the first column name is not polluted by it. A header with a
+    repeated column name raises ValueError: the column-oriented
+    table keys values by name, so a duplicate would silently
+    merge two columns' values.
     """
     with path.open(newline="", encoding="utf-8-sig") as fh:
         reader = csv.reader(fh)
         header = next(reader, None)
         if header is None:
             return Table()
+
+        seen: set[str] = set()
+        for name in header:
+            if name in seen:
+                raise ValueError(f"duplicate column name: '{name}'")
+            seen.add(name)
 
         data: dict[str, list[str]] = {name: [] for name in header}
         width = len(header)

@@ -39,6 +39,27 @@ def test_main_missing_file(capsys):
     assert "no such file" in capsys.readouterr().err
 
 
+def test_main_empty_file_errors(tmp_path, capsys):
+    path = write_csv(tmp_path, "")
+    assert main([str(path)]) == 1
+    assert "empty" in capsys.readouterr().err
+
+
+def test_main_undecodable_file_errors_without_traceback(tmp_path, capsys):
+    path = tmp_path / "bad.csv"
+    path.write_bytes(b"\xff\xfe not utf-8\n")
+    assert main([str(path)]) == 1
+    err = capsys.readouterr().err
+    assert "not valid UTF-8" in err
+    assert "Traceback" not in err
+
+
+def test_main_duplicate_header_errors(tmp_path, capsys):
+    path = write_csv(tmp_path, "a,a\n1,2\n")
+    assert main([str(path)]) == 1
+    assert "duplicate column name: 'a'" in capsys.readouterr().err
+
+
 def test_main_prints_inferred_types(tmp_path, capsys):
     path = write_csv(
         tmp_path, "name,age,joined,active\nada,36,2026-01-15,true\n"

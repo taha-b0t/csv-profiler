@@ -47,3 +47,11 @@ def test_bom_is_stripped_from_first_column(tmp_path):
     path.write_bytes(b"\xef\xbb\xbfname,age\nalice,30\n")
     table = read_csv(path)
     assert table.columns == ["name", "age"]
+
+
+def test_duplicate_header_raises(tmp_path):
+    import pytest
+
+    path = write_csv(tmp_path, "a,a\n1,2\n")
+    with pytest.raises(ValueError, match="duplicate column name: 'a'"):
+        read_csv(path)

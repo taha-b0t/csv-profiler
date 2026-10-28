@@ -94,7 +94,20 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: no such file: {path}", file=sys.stderr)
         return 1
 
-    table = read_csv(path)
+    try:
+        table = read_csv(path)
+    except UnicodeDecodeError:
+        # UnicodeDecodeError subclasses ValueError, so it must be
+        # caught first; otherwise a non-UTF-8 file would surface
+        # as a generic malformed-file error.
+        print(f"error: {path} is not valid UTF-8", file=sys.stderr)
+        return 1
+    except ValueError as exc:
+        print(f"error: {path}: {exc}", file=sys.stderr)
+        return 1
+    if not table.columns:
+        print(f"error: {path} is empty (no header row)", file=sys.stderr)
+        return 1
     if args.report:
         report_path = Path(args.report)
         report_path.write_text(generate_report(table), encoding="utf-8")
