@@ -1,5 +1,7 @@
 # csv-profiler
 
+[![Tests](https://github.com/taha-b0t/csv-profiler/actions/workflows/tests.yml/badge.svg)](https://github.com/taha-b0t/csv-profiler/actions/workflows/tests.yml)
+
 A tiny data-quality profiler for CSV files. Pure Python, standard library only — no pandas, no dependencies.
 
 Point it at a CSV and it tells you what you're actually working with: column types, missing values, duplicates, basic statistics, and the kind of quiet data problems that break pipelines later.
@@ -45,7 +47,7 @@ Profiling features land incrementally — see the roadmap below.
 - [x] Data-quality warnings (high null %, constant columns, mixed types)
 - [x] Markdown report output (`--report report.md`)
 - [x] JSON output (`--json`)
-- [ ] GitHub Actions CI
+- [x] GitHub Actions CI
 - [ ] v1.0.0 release
 
 ## Development
