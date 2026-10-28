@@ -38,6 +38,50 @@ warnings: duplicate rows, columns with over 30% missing values,
 constant columns, and columns mixing value types.
 Profiling features land incrementally — see the roadmap below.
 
+## Example
+
+A sample file ships in [`examples/people.csv`](examples/people.csv):
+
+```csv
+name,age,city,joined
+Amina,28,Casablanca,2023-01-15
+Youssef,34,Rabat,2022-06-01
+Sara,,Marrakech,2024-03-10
+Youssef,34,Rabat,2022-06-01
+Omar,41,Tangier,2021-11-20
+```
+
+```bash
+csvprofiler examples/people.csv
+```
+
+```text
+file:    examples/people.csv
+rows:    5
+columns: 4
+types:
+  name: string
+  age: integer
+  city: string
+  joined: date
+stats:
+  name:
+    count: 5, nulls: 0 (0.0%), unique: 4
+    top values: Youssef (2), Amina (1), Sara (1), Omar (1)
+  age:
+    count: 4, nulls: 1 (20.0%), unique: 3
+    min: 28, max: 41, mean: 34.25, median: 34.0
+  city:
+    count: 5, nulls: 0 (0.0%), unique: 4
+    top values: Rabat (2), Casablanca (1), Marrakech (1), Tangier (1)
+  joined:
+    count: 5, nulls: 0 (0.0%), unique: 4
+warnings:
+  - 1 duplicate row(s) found
+```
+
+One missing age, one duplicated row — spotted at a glance.
+
 ## Roadmap
 
 - [x] CLI skeleton: read a CSV, report row/column counts
