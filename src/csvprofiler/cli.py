@@ -110,7 +110,14 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     if args.report:
         report_path = Path(args.report)
-        report_path.write_text(generate_report(table), encoding="utf-8")
+        try:
+            report_path.write_text(generate_report(table), encoding="utf-8")
+        except OSError as exc:
+            # A bad report destination (missing parent directory,
+            # read-only location) should be a clean error like the
+            # other CLI input errors, not a traceback.
+            print(f"error: cannot write report to {report_path}: {exc.strerror or exc}", file=sys.stderr)
+            return 1
     if args.json:
         # Stdout stays pure JSON so it can be piped to other tools;
         # a --report file is still written, just not announced here.

@@ -162,3 +162,22 @@ def test_main_prints_per_column_stats(tmp_path, capsys):
     assert "count: 2, nulls: 1 (33.3%), unique: 2" in out
     assert "min: 25, max: 30, mean: 27.5, median: 27.5" in out
     assert "top values: Paris (3)" in out
+
+
+def test_main_unwritable_report_path_errors_without_traceback(tmp_path, capsys):
+    path = write_csv(tmp_path, "age,city\n30,Paris\n25,Lyon\n")
+    report_path = tmp_path / "missing-dir" / "report.md"
+    assert main([str(path), "--report", str(report_path)]) == 1
+    captured = capsys.readouterr()
+    assert "cannot write report" in captured.err
+    assert "Traceback" not in captured.err
+    assert captured.out == ""
+
+
+def test_main_unwritable_report_path_with_json_errors_without_json(tmp_path, capsys):
+    path = write_csv(tmp_path, "age\n30\n25\n")
+    report_path = tmp_path / "missing-dir" / "report.md"
+    assert main([str(path), "--json", "--report", str(report_path)]) == 1
+    captured = capsys.readouterr()
+    assert "cannot write report" in captured.err
+    assert captured.out == ""
